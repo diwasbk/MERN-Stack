@@ -1,11 +1,14 @@
 import express, { Application } from "express";
+import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes";
-import schemaValidatewareMiddleware from "./middlewares/schema.validator.middleware";
-import { userSchema } from "./types/user.types";
+import userRouter from "./routes/user.routes";
+import { jwtAuthMiddleware } from "./utils/jwt";
 
 const app: Application = express();
 app.use(express.json());
+app.use(cookieParser());
 
-app.use("/api/auth",schemaValidatewareMiddleware(userSchema), authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", jwtAuthMiddleware, userRouter);
 
 export default app;

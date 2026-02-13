@@ -27,7 +27,7 @@ const jwtAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     if (!token) {
         return res.status(401).send({
-            message: "Unquthorized: No token provided!",
+            message: "Unauthorized: No token provided!",
             success: false
         });;
     };
