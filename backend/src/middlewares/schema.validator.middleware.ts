@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodSchema } from "zod";
 
-const schemaValidatewareMiddleware = (schema: ZodSchema) => async (req: Request, res: Response, next: NextFunction) => {
+const schemaValidateMiddleware = (schema: ZodSchema) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         const parseBody = await schema.parseAsync(req.body);
         req.body = parseBody;
@@ -14,4 +14,4 @@ const schemaValidatewareMiddleware = (schema: ZodSchema) => async (req: Request,
     };
 };
 
-export default schemaValidatewareMiddleware;
+export default schemaValidateMiddleware;
