@@ -15,3 +15,9 @@ export const changePasswordSchema = z.object({
     message: "Passwords do not match.",
     path: ["confirmPassword"]
 });
+
+/* Send Password Reset Email Schema */
+export const sendPasswordResetEmailSchema = z.object({
+    email: z.string("Email is required.").nonempty("Email is required.").email({ message: "Please enter a valid email address." })
+});
+export type sendPasswordResetEmaiType = z.infer<typeof sendPasswordResetEmailSchema>;
