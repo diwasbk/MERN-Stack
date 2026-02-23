@@ -4,3 +4,5 @@ dotenv.config();
 export const PORT = process.env.PORT || 4200;
 export const MONGO_DB_URL = process.env.MONGO_DB_URL as string;
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
+export const USER_EMAIL = process.env.USER_EMAIL as string;
+export const APP_PASS = process.env.APP_PASS as string;
