@@ -22,6 +22,34 @@ class UserController {
             });
         };
     };
+
+    // Get User By ID
+    getUserById = async (req: Request, res: Response) => {
+        try {
+            const userExist = await userModel.findOne({ _id: req.params.userId });
+
+            if (!userExist) {
+                res.status(404).send({
+                    message: "User not found!",
+                    success: false
+                });
+            };
+
+            res.status(200).send({
+                message: "User fetched successfully!",
+                result: userExist,
+                success: true
+            });
+
+        } catch (err: any) {
+            console.log(err);
+
+            res.status(500).send({
+                message: err.response?.message ? `Internal server error: ${err.message}` : "Internal server error.",
+                success: false
+            });
+        };
+    };
 };
 
 export default UserController;
