@@ -9,5 +9,6 @@ const userController = new UserController();
 userRouter.get("/", userController.getAllUser);
 userRouter.get("/:userId", userController.getUserById);
 userRouter.put("/update/:userId", schemaValidateMiddleware(updateUserSchema), userController.updateUserById);
+userRouter.delete("/delete/:userId", userController.deleteUserById);
 
 export default userRouter;
