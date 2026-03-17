@@ -1,4 +1,7 @@
 "use client";
+import { useForm } from "react-hook-form";
+import { signupSchema, signupType } from "../../schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { formStyles } from "@/app/lib/styles/styles";
 import { MdEmail, MdPassword } from "react-icons/md";
@@ -6,6 +9,15 @@ import { BiPhone } from "react-icons/bi";
 import Link from "next/link";
 
 export default function SignupForm() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm<signupType>({ resolver: zodResolver(signupSchema) })
+
+    const onSubmit = async (data: signupType) => {
+        console.log(data);
+    };
 
     return (
         <div className="flex-1 flex items-center justify-center relative overflow-hidden m-2">
@@ -19,7 +31,7 @@ export default function SignupForm() {
                     Create Your Account
                 </h2>
                 <p className="text-slate-600 text-sm mb-6">Join us to manage your personal space seamlessly</p>
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Email */}
                     <div>
                         <label htmlFor="signup-email" className={formStyles.label}>Email address</label>
@@ -27,11 +39,15 @@ export default function SignupForm() {
                             <MdEmail size={18} className={formStyles.icon} />
                             <input
                                 id="signup-email"
+                                {...register("email")}
                                 type="text"
                                 placeholder="johndoe@example.com"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.email && (
+                            <p className="text-xs text-red-500 mt-2">{errors.email.message}</p>
+                        )}
                     </div>
 
                     {/* Phone Number */}
@@ -41,11 +57,15 @@ export default function SignupForm() {
                             <BiPhone size={18} className={formStyles.icon} />
                             <input
                                 id="signup-phone"
+                                {...register("phone")}
                                 type="tel"
                                 placeholder="9800000000"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.phone && (
+                            <p className="text-xs text-red-500 mt-2">{errors.phone.message}</p>
+                        )}
                     </div>
 
                     {/* Password */}
@@ -55,11 +75,15 @@ export default function SignupForm() {
                             <MdPassword size={18} className={formStyles.icon} />
                             <input
                                 id="signup-password"
+                                {...register("password")}
                                 type="password"
                                 placeholder="•••••••••••"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.password && (
+                            <p className="text-xs text-red-500 mt-2">{errors.password.message}</p>
+                        )}
                     </div>
 
                     {/* Confirm Password */}
@@ -69,17 +93,22 @@ export default function SignupForm() {
                             <MdPassword size={18} className={formStyles.icon} />
                             <input
                                 id="signup-confirm-password"
+                                {...register("confirmPassword")}
                                 type="password"
                                 placeholder="•••••••••••"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.confirmPassword && (
+                            <p className="text-xs text-red-500 mt-2">{errors.confirmPassword.message}</p>
+                        )}
                     </div>
 
                     {/* Terms and Conditions */}
                     <div className="flex items-start gap-3">
                         <input
                             id="signup-terms"
+                            {...register("termsAgreed")}
                             type="checkbox"
                             className=" w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
                         />
@@ -90,13 +119,19 @@ export default function SignupForm() {
                         </label>
                     </div>
 
+                    {errors.termsAgreed && (
+                        <p className="text-xs text-red-500">{errors.termsAgreed.message}</p>
+                    )}
+
                     {/* Action Row */}
                     <div className="flex flex-col gap-6 pt-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-700 text-white py-3 px-8 rounded-xl font-bold shadow-xl shadow-blue-100 transition-all hover:bg-blue-800 cursor-pointer"
+                            disabled={isSubmitting}
+                            className={`w-full bg-blue-700 text-white py-3 px-8 rounded-xl font-bold shadow-xl shadow-blue-100 transition-all
+                                         ${isSubmitting ? "opacity-60" : "hover:bg-blue-800 cursor-pointer"}`}
                         >
-                            Create Account
+                            {isSubmitting ? "Creating Account..." : "Create Account"}
                         </button>
                         <p className="text-center text-sm text-slate-600">
                             Already have an account?{" "}
