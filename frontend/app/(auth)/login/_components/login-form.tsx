@@ -2,9 +2,24 @@
 import { formStyles } from "@/app/lib/styles/styles";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { MdEmail, MdPassword } from "react-icons/md";
+import { loginSchema, loginType } from "../../schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginForm() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm<loginType>({
+        resolver: zodResolver(loginSchema)
+    });
+
+    const onSubmit = async (data: loginType) => {
+        console.log(data);
+    };
+
     return (
         <div className="flex-1 flex items-center justify-center relative overflow-hidden m-2">
             <motion.div
@@ -13,25 +28,29 @@ export default function LoginForm() {
                 transition={{ duration: 0.6 }}
                 className="relative z-10 backdrop-blur-sm rounded-2xl w-full max-w-lg p-10 md:ml-40 border-2 border-blue-200 bg-white shadow-lg"
             >
-                <h2 className="text-3xl font-bolda bg-linear-to-r from-slate-800 via-blue-600 to-slate-800 bg-clip-text text-transparent mb-2">
+                <h2 className="text-4xl font-bold bg-linear-to-r from-slate-800 via-blue-600 to-slate-800 bg-clip-text text-transparent mb-2">
                     Welcome Back
                 </h2>
 
                 <p className="text-slate-600 text-sm mb-6">Sign in to access your personal space</p>
 
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Email */}
                     <div>
                         <label htmlFor="login-email" className={formStyles.label}>Email address</label>
                         <div className="relative">
                             <MdEmail size={18} className={formStyles.icon} />
                             <input
+                                {...register("email")}
                                 id="login-email"
                                 type="text"
                                 placeholder="johndoe@example.com"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.email && (
+                            <p className="text-xs text-red-500 mt-2">{errors.email.message}</p>
+                        )}
                     </div>
 
                     {/* Password */}
@@ -40,12 +59,16 @@ export default function LoginForm() {
                         <div className="relative">
                             <MdPassword size={18} className={formStyles.icon} />
                             <input
+                                {...register("password")}
                                 id="login-password"
                                 type="password"
                                 placeholder="•••••••••••"
                                 className={formStyles.input}
                             />
                         </div>
+                        {errors.password && (
+                            <p className="text-xs text-red-500 mt-2">{errors.password.message}</p>
+                        )}
 
                         {/* Forgot Password Link */}
                         <div className="text-right mt-2">
@@ -62,9 +85,10 @@ export default function LoginForm() {
                     <div className="flex flex-col gap-6 pt-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-700 text-white py-3 px-8 rounded-xl font-bold shadow-xl shadow-blue-100 transition-all cursor-pointer"
+                            className={`w-full bg-blue-700 text-white py-3 px-8 rounded-xl font-bold shadow-xl shadow-blue-100 transition-all
+                                ${isSubmitting ? "opacity-60" : "hover:bg-blue-800 cursor-pointer"}`}
                         >
-                            Log In
+                            {isSubmitting ? "Logging In..." : "Log In"}
                         </button>
 
                         {/* Signup */}
