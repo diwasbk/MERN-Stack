@@ -6,8 +6,14 @@ import { useForm } from "react-hook-form";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { loginSchema, loginType } from "../../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { handleLogin } from "@/app/lib/actions/auth-actions";
 
 export default function LoginForm() {
+    const router = useRouter();
+    const [err, setError] = useState("");
+
     const {
         register,
         handleSubmit,
@@ -17,7 +23,20 @@ export default function LoginForm() {
     });
 
     const onSubmit = async (data: loginType) => {
-        console.log(data);
+        setError("");
+
+        try {
+            const res = await handleLogin(data);
+
+            if (!res.success) {
+                throw new Error(res.message || "Login failed!");
+            };
+
+            router.push("/dashboard");
+
+        } catch (err: any) {
+            setError(err.message || "Login failed!");
+        };
     };
 
     return (
@@ -35,6 +54,11 @@ export default function LoginForm() {
                 <p className="text-slate-600 text-sm mb-6">Sign in to access your personal space</p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Server Error */}
+                    {err && (
+                        <div className="bg-red-300 p-2 rounded-[10px] text-xs text-red-600 mt-2">{err}</div>
+                    )}
+                    
                     {/* Email */}
                     <div>
                         <label htmlFor="login-email" className={formStyles.label}>Email address</label>

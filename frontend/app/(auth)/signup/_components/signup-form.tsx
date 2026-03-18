@@ -7,8 +7,14 @@ import { formStyles } from "@/app/lib/styles/styles";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { BiPhone } from "react-icons/bi";
 import Link from "next/link";
+import { useState } from "react";
+import { handleSignUp } from "@/app/lib/actions/auth-actions";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
+    const router = useRouter();
+    const [err, setError] = useState("");
+
     const {
         register,
         handleSubmit,
@@ -16,7 +22,20 @@ export default function SignupForm() {
     } = useForm<signupType>({ resolver: zodResolver(signupSchema) })
 
     const onSubmit = async (data: signupType) => {
-        console.log(data);
+        setError("");
+
+        try {
+            const res = await handleSignUp(data);
+
+            if (!res.success) {
+                throw new Error(res.message || "Signup failed!");
+            };
+
+            router.push("/login");
+
+        } catch (err: any) {
+            setError(err.message || "Signup failed!");
+        };
     };
 
     return (
@@ -32,6 +51,11 @@ export default function SignupForm() {
                 </h2>
                 <p className="text-slate-600 text-sm mb-6">Join us to manage your personal space seamlessly</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Server Error */}
+                    {err && (
+                        <div className="bg-red-300 p-2 rounded-[10px] text-xs text-red-600 mt-2">{err}</div>
+                    )}
+
                     {/* Email */}
                     <div>
                         <label htmlFor="signup-email" className={formStyles.label}>Email address</label>

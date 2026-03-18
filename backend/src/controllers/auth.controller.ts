@@ -57,7 +57,7 @@ class AuthController {
 
             if (!userExist) {
                 return res.status(404).send({
-                    message: "Invalid email or password.",
+                    message: "Invalid email or password!",
                     success: false
                 });
             };
@@ -66,7 +66,7 @@ class AuthController {
 
             if (!isPasswordMatch) {
                 return res.status(401).send({
-                    message: "Invalid email or password",
+                    message: "Invalid email or password!",
                     success: false
                 });
             };
